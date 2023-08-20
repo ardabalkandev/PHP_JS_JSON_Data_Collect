@@ -1,0 +1,18 @@
+{
+  "name": "phpjscollect",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ardabalkandev/PHP_JS_JSON_Data_Collect.git",
+  "author": "ardabalkandev",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && cp js_result.php dist/js_result.php",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "jquery": "^3.7.0",
+    "sweetalert2": "^11.7.27",
+    "vite": "^4.4.9"
+  }
+}

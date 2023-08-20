@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON Barcode Form with jQuery - Alerts with Sweet Alert</title>
+    <script type="module" src="main.js"></script>
+</head>
+<body>
+
+<h1>JSON Form with jQuery - Sweet Alert - Beep Sounds</h1>
+<form>
+    <label for="barcode">Barcode:</label>
+    <input type="number" id="barcode" name="barcode" autofocus required>
+    <button type="button" id="sendButton">Submit</button>
+</form>
+<div>
+    <h2>Submitted Data - <span id="dataCount">0</span> Record(s)</h2>
+    <pre id="jsonContainer"></pre>
+</div>
+<button type="button" id="finishButton">Finish</button>
+<p>Click the button above to submit all data to server.</p>
+</body>
+</html>
