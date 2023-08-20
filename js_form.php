@@ -1,128 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <title>JSON Barcode Form with jQuery - Alerts with Sweet Alert</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  // Create an array to keep JSON data
-  var jsonData = [];
-
   $(document).ready(function() {
-    // when "Submit" button clicked
+    var jsonData = [];
+    var $barcode = $("#barcode");
+    var $dataCount = $("#dataCount");
+    var $jsonContainer = $("#jsonContainer");
+
+    function showMessage(message, type, soundAlert, confirmButtonColor) {
+      var icon = (type === 'error') ? 'error' : 'success';
+
+      if (soundAlert === 1) {
+        if (type === 'error') {
+            playSound('error');
+        } else {
+            playSound('ok');
+        }
+      }
+
+      Swal.fire({
+          position: 'top',
+          icon: icon,
+          title: message,
+          showConfirmButton: true,
+          confirmButtonText: 'Ok',
+          confirmButtonColor: confirmButtonColor,
+          timerProgressBar: true,
+          timer: 3500
+      });
+    }
+
+    function playSound(soundType) {
+      var audio = new Audio('sound/' + soundType + '.mp3');
+      audio.play();
+    }
+
+    function updateDataCount() {
+      var dataCount = jsonData.length;
+      $dataCount.text(dataCount);
+    }
+
+    function updateJsonData() {
+      $jsonContainer.html(JSON.stringify(jsonData, null, 2));
+    }
+
+    function submitForm() {
+      var barcodeValue = $barcode.val();
+
+      if (!barcodeValue) {
+        showMessage('Please read a barcode.', 'error', 1, '#FF0022');
+        $barcode.val("");
+        return;
+      }
+
+      if (jsonData.includes(barcodeValue)) {
+        showMessage('You added this barcode before.', 'error', 1, '#FF0022');
+        $barcode.val("");
+        return;
+      }
+
+      playSound('ok');
+      jsonData.push(barcodeValue);
+      updateJsonData();
+      updateDataCount();
+      $barcode.val("");
+    }
+
     $("#sendButton").click(submitForm);
 
-    // submit the collected JSON data to js_result.php
     $("#finishButton").click(function() {
       window.location.href = "js_result.php?jsonData=" + JSON.stringify(jsonData);
     });
 
-    // when "Enter" pressed on keyboard or barcode scanner read event
-    $("#barcode").keypress(function(event) {
+    $barcode.keypress(function(event) {
       if (event.which === 13) {
         event.preventDefault();
         submitForm();
       }
     });
   });
-
-  // show error message with / without sound
-  function showError($errorText, $soundAlert) {
-      var message = $errorText;
-      var soundAlert = $soundAlert;
-      Swal.fire({
-          position: 'top',
-          icon: 'error',
-          title: message,
-          showConfirmButton: true,
-          confirmButtonText: 'Ok',
-          confirmButtonColor: '#FF0022',
-          timerProgressBar: true,
-          timer: 3500
-      });
-      if(soundAlert == 1){
-        playError();
-      }
-  }
-
-  // show ok message with / without sound
-  function showOk($okText, $soundAlert) {
-    var message = $okText;
-    var soundAlert = $soundAlert;
-    if(soundAlert == 1){
-      playOk();
-    }
-    Swal.fire({
-        position: 'top',
-        icon: 'success',
-        title: message,
-        showConfirmButton: true,
-        confirmButtonText: 'Ok',
-        confirmButtonColor: '#008822',
-        timerProgressBar: true,
-        timer: 3500
-    });
-  }
-
-  // just play "ok" sound
-  function playOk() {
-    var audio = new Audio('sound/ok.mp3');
-    audio.play();
-  };
-
-  // just play "error" sound
-  function playError() {
-    var audio = new Audio('sound/error.mp3');
-    audio.play();
-  };
-
-  // onsubmit check function
-  function submitForm() {
-    var barcodeValue = $("#barcode").val();
-
-    // if empty value
-    if(barcodeValue == "" || barcodeValue == null){
-      // show error message
-      showError('Please read a barcode.',1);
-      // clear barcode input box for next entry
-      $("#barcode").val("");
-      return;
-    }
-
-    // check JSON data for repetition
-    if (jsonData.includes(barcodeValue)) {
-      // show error message for repetition
-      showError('You added this barcode before.',1);
-      // clear barcode input box content
-      $("#barcode").val("");
-      return;
-    }
-
-    // play "ok sound"
-    playOk();
-    // add data to JSON
-    jsonData.push(barcodeValue);
-
-    // update JSON data and JSON count data
-    updateJsonData();
-    updateDataCount();
-
-    // clean input box for next entry
-    $("#barcode").val("");
-  }
-
-  // update JSON count
-  function updateDataCount() {
-    var dataCount = jsonData.length;
-    $("#dataCount").text(dataCount);
-  }
-
-  // update JSON data
-  function updateJsonData() {
-    var jsonContainer = $("#jsonContainer");
-    jsonContainer.html(JSON.stringify(jsonData, null, 2));
-  }
 </script>
 </head>
 <body>
@@ -138,6 +99,6 @@
   <pre id="jsonContainer"></pre>
 </div>
 <button type="button" id="finishButton">Finish</button>
-<p>Click the button above to submit all data to server.</p>
+<p>Click the button above to submit all data to the server.</p>
 </body>
 </html>
